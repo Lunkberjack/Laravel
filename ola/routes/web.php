@@ -44,6 +44,6 @@ Route::get('products/{product}/edit', 'ProductController@edit')->name('products.
 
 // Laravel permite matchear varias opciones, es decir, si se recibe una ruta
 // ya sea con ::put o ::patch, se realiza la función deseada
-Route::match(['put', 'patch'], 'products/{product}/', 'ProductController@update')->name('products.update');
+Route::match(['put', 'patch'], 'products/{product}', 'ProductController@update')->name('products.update');
 
 Route::delete('products/{product}/edit', 'ProductController@destroy')->name('products.destroy');

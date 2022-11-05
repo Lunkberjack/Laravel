@@ -14,6 +14,7 @@ class CreateProductsTable extends Migration {
 		Schema::create('products', function (Blueprint $table) {
 			$table->id();
 			$table->string('title');
+			// Máx 1000 caracteres (default 255)
 			$table->string('description', 1000);
 			$table->float('price')->unsigned();
 			$table->integer('stock')->unsigned();
