@@ -1,8 +1,8 @@
-@extends ('layouts.master')
+@extends ('layouts.app')
 @section('content')
-	<h1>List of Products</h1>
+	<h1>Products</h1>
 	<!--Crea un botón que nos redirige a la pantalla de creación de productos-->
-	<a class="btn btn-success" href="{{ route('products.create') }}">Create</a>
+	<a class="mb-3 btn btn-success mb-3" href="{{ route('products.create') }}">Create</a>
 	@empty($products)
 	    <div class="alert alert-warning">
 	    	The product list is empty.
@@ -30,13 +30,15 @@
 					<td>{{ $product->price }}</td>
 					<td>{{ $product->stock }}</td>
 					<td>{{ $product->status }}</td>
-					<td>
+					<td class="d-inline-flex">
 						<!--SHOW-->
 						<a class="btn btn-link" href="{{  route('products.show', ['product' => $product->id]) }}">Show</a>
+						{{-- PARA INYECCIÓN AUTOMÁTICA, MOSTRAR EL TITLE EN LA RUTA
+						<a class="btn btn-link" href="{{  route('products.show', ['product' => $product->title]) }}">Show</a> --}}
 						<!--EDIT-->
 						<a class="btn btn-link" href="{{  route('products.edit', ['product' => $product->id]) }}">Edit</a>
 						<!--DELETE-->
-						<form method="POST" action="{{ route('products.destroy', ['product' => $product->id]) }}">
+						<form class="d-inline" method="POST" action="{{ route('products.destroy', ['product' => $product->id]) }}">
 							@csrf
 							@method('DELETE')
 							<button class="btn btn-link" type="submit">Delete</button>

@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
  */
 Route::get('/', 'MainController@index')->name('welcome');
+
+Route::resource('products', 'ProductController');
+
+/*
 // Así era antes de cambiarlo en el ej. 19
 // Route::get('/', function () {
 // 	return view('welcome');
@@ -39,6 +43,7 @@ Route::post('products', 'ProductController@store')->name('products.store');
 // create como parámetro, id de producto (incorrecto),
 // por lo que este método debe estar debajo de products/create
 Route::get('products/{product}', 'ProductController@show')->name('products.show');
+// INY. AUTO: Route::get('products/{product:title}', 'ProductController@show')->name('products.show');
 
 Route::get('products/{product}/edit', 'ProductController@edit')->name('products.edit');
 
@@ -47,3 +52,14 @@ Route::get('products/{product}/edit', 'ProductController@edit')->name('products.
 Route::match(['put', 'patch'], 'products/{product}', 'ProductController@update')->name('products.update');
 
 Route::delete('products/{product}/edit', 'ProductController@destroy')->name('products.destroy');
+*/
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::resource('products.carts', 'ProductCartController')->only(['store', 'destroy']);
+
+Route::resource('carts', 'CartController')->only(['index']);
+
+Route::resource('orders', 'OrderController')->only(['create', 'store']);
+?>

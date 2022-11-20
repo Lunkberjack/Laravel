@@ -4,21 +4,23 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCartProductTable extends Migration
+class CreateProductablesTable extends Migration
 {
-    /**
-     * Run the migrations.
+    /** Run the migrations.
      *
      * @return void
      */
     public function up()
     {
-        Schema::create('cart_product', function (Blueprint $table) {
-            $table->bigInteger('cart_id')->unsigned();
+        Schema::create('productables', function (Blueprint $table) {
+            // Al crear morphs() un productable_id, este atributo
+            // deja de ser necesario.
+            // $table->bigInteger('order_id')->unsigned();
             $table->bigInteger('product_id')->unsigned();
             $table->bigInteger('quantity')->unsigned();
+            $table->morphs('productable');
 
-            $table->foreign('cart_id')->references('id')->on('products');
+            // $table->foreign('order_id')->references('id')->on('orders');
             $table->foreign('product_id')->references('id')->on('products');
         });
     }
@@ -30,6 +32,6 @@ class CreateCartProductTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cart_product');
+        Schema::dropIfExists('order_product');
     }
 }
