@@ -9,8 +9,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Order, App\Models\Payment, App\Models\Image;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-class User extends Authenticatable {
+class User extends Authenticatable implements MustVerifyEmail {
 	use HasApiTokens, HasFactory, Notifiable;
 
 	/**
@@ -48,7 +49,7 @@ class User extends Authenticatable {
 	 * @var [type]
 	 */
 	protected $dates = [
-		'admin-since',
+		'admin_since',
 	];
 
 	public function orders() {
@@ -62,4 +63,20 @@ class User extends Authenticatable {
 	public function image() {
 		return $this->morphOne(Image::class, 'imageable');
 	}
+
+	public function isAdmin() {
+	// True si el usuario contiene la propiedad admin_since
+	// y además es administrador en la fecha actual.
+	return $this->admin_since != null 
+		&& $this->admin_since->lessThanOrEqualTo(now());
+	}
+
+	public function setPasswordAttribute($password) {
+		// Ciframos la contraseña desde el setter
+		$this->attributes['password'] = bcrypt($password);
+	}
+
+	public function getProfileImageAttribute() {
+	return $this->image ? "images/{$this->image->path}" : 'https://www.gravatar.com/avatar/404?d=mp';
+}
 }

@@ -14,8 +14,6 @@ use Illuminate\Support\Facades\Route;
  */
 Route::get('/', 'MainController@index')->name('welcome');
 
-Route::resource('products', 'ProductController');
-
 /*
 // Así era antes de cambiarlo en el ej. 19
 // Route::get('/', function () {
@@ -53,7 +51,16 @@ Route::match(['put', 'patch'], 'products/{product}', 'ProductController@update')
 
 Route::delete('products/{product}/edit', 'ProductController@destroy')->name('products.destroy');
 */
-Auth::routes();
+
+Route::get('profile', 'ProfileController@edit')->name('profile.edit');
+
+Route::put('profile', 'ProfileController@update')->name('profile.update');
+
+Auth::routes([
+    'verify' => true,
+]);
+
+Route::get('/', 'MainController@index')->name('main');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
@@ -61,5 +68,11 @@ Route::resource('products.carts', 'ProductCartController')->only(['store', 'dest
 
 Route::resource('carts', 'CartController')->only(['index']);
 
-Route::resource('orders', 'OrderController')->only(['create', 'store']);
+Route::resource('orders', 'OrderController')
+    ->only(['create', 'store'])
+    ->middleware(['verified']);
+
+Route::resource('orders.payments', 'OrderPaymentController')
+    ->only(['create', 'store'])
+    ->middleware(['verified']);
 ?>

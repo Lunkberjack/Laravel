@@ -4,7 +4,13 @@ use App\Models\Cart;
 use Illuminate\Support\Facades\Cookie;
 
 class CartService {
-    protected $cookieName = 'cart';
+    protected $cookieName;
+    protected $cookieExpiration;
+
+    public function __construct() {
+        $this->cookieName = config('cart.cookie.name');
+        $this->cookieExpiration = config('cart.cookie.expiration');
+    }
 
     public function getFromCookie() {
         $cartId = Cookie::get($this->cookieName);
@@ -25,7 +31,7 @@ class CartService {
 
     public function makeCookie(Cart $cart) {
         // Atributo con el nombre de la cookie (manejabilidad)
-        return Cookie::make($this->cookieName, $cart->id, 7 * 24 * 60);
+        return Cookie::make($this->cookieName, $cart->id, $this->cookieExpiration);
     }
 
     public function countProducts() {

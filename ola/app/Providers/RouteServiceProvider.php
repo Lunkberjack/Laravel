@@ -16,7 +16,8 @@ class RouteServiceProvider extends ServiceProvider {
 	 *
 	 * @var string
 	 */
-	public const HOME = '/home';
+	// Modificao en vídeo 85
+	public const HOME = '/';
 
 	/**
 	 * The controller namespace for the application.
@@ -39,6 +40,7 @@ class RouteServiceProvider extends ServiceProvider {
 	public function map() {
 		$this->mapApiRoutes();
 		$this->mapWebRoutes();
+		$this->mapPanelRoutes();
 	}
 
 	protected function mapApiRoutes() {
@@ -52,6 +54,18 @@ class RouteServiceProvider extends ServiceProvider {
 		Route::middleware('web')
 			->namespace($this->namespace)
 			->group(base_path('routes/web.php'));
+	}
+
+	/**
+	* Define the "admin panel" routes for the application.
+	* @return void
+	*/
+	protected function mapPanelRoutes() {
+		Route::prefix('panel')
+			->middleware(['web', 'auth', 'is.admin', 'verified'])
+			// Para mejor organización
+			->namespace("{$this->namespace}\Panel")
+			->group(base_path('routes/panel.php'));
 	}
 
 	/**

@@ -29,6 +29,14 @@ return [
     */
 
     'disks' => [
+        'images' => [
+            'driver' => 'local',
+            // Guardamos en la carpeta images (debemos duplicar el gitignore para
+            // que la carpeta exista siempre)
+            'root' => storage_path('app/public/images'),
+            'url' => env('APP_URL').'/images',
+            'visibility' => 'public',
+        ],
 
         'local' => [
             'driver' => 'local',
@@ -65,9 +73,10 @@ return [
     | the locations of the links and the values should be their targets.
     |
     */
-
+   // Enlaces simbólicos (las imágenes se redirigen a esta ruta)
     'links' => [
         public_path('storage') => storage_path('app/public'),
+        public_path('images') => storage_path('app/public/images'),
     ],
 
 ];

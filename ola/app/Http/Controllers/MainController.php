@@ -13,7 +13,12 @@ class MainController extends Controller {
 //		Momento beta
 //		$products = Product::where('status', 'available')			->get();
 //		Momento alfa (usando scopes)
-		$products = Product::available()->get();
+//		$products = Product::available()->get();
+//		Momento aún más alfa (global scope)
+		\DB::connection()->enableQueryLog();
+		// images es el nombre de la relación
+		// (o función en el Models\Product)
+		$products = Product::all();
 		return view('welcome')->with(['products' => $products]);
 	}
 }

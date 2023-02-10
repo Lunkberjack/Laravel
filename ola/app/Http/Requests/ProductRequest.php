@@ -30,16 +30,17 @@ class ProductRequest extends FormRequest
             'description' => ['required', 'max:1000'],
             'price' => ['required', 'min:1'],
             'stock' => ['required', 'min:0'],
-            'status' => ['required', 'in:available,unavailable']
+            'status' => ['required', 'in:available,unavailable'],
+            'images.*' => ['nullable', 'image'],
         ];
     }
 
     // Se ejecuta después de las rules()
     public function withValidator($validator)
     {
-        $validator->after(function($validator) {
+        $validator->after(function ($validator) {
             //this porque estamos dentro de la petición
-            if($this->status == 'available' && $this->stock == 0) {
+            if ($this->status == 'available' && $this->stock == 0) {
                 $validator->errors()->add('stock', 'If available must have stock');
             }
         });
