@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 // use Illuminate\Support\Facades\DB;
 use App\Http\Requests\ProductRequest;
 use App\Models\PanelProduct;
+use App\Scopes\AvailableScope;
+use Illuminate\Support\Facades\File;
 
 class ProductController extends Controller {
 /* Ya no es necesario (se encarga el)
@@ -33,6 +35,7 @@ class ProductController extends Controller {
 	public function create() {
 		return view('products.create');
 	}
+
 	public function store(ProductRequest $request) {
 /*		// REGLAS VALIDACIÓN
 		$rules = [
@@ -58,7 +61,7 @@ class ProductController extends Controller {
 			->withErrors('If available must have stock');
 		}
 */
-//		FORMA BETA (no mentalidad tiburón)
+//		FORMA MEH
 //		$product = Product::create([
 //			'title'=>request()->title,
 //			'description'=>request()->description,
@@ -66,10 +69,18 @@ class ProductController extends Controller {
 //			'stock'=>request()->stock,
 //			'status'=>request()->status,
 //		]);
-//		FORMA ALFA (real tiburón)
-		dd($request->validated());
+//		FORMA CHAD
 //		// Solo los que han sido validados con nuestras reglas
-		$product = PanelProduct::create($request()->validated());
+		$product = PanelProduct::create($request->validated());
+
+        foreach ($request->images as $image) {
+            $product->images()->create([
+            	// Guardamos en la carpeta especificada para las images, dentro
+            	// de otra llamada 'products'.
+                'path' => 'images/' . $image->store('products', 'images'),
+            ]);
+        }
+
 //		return redirect()->back();
 //		return redirect()->action('MainController@index');
 //		session()->flash('success', "The new product with id {$product->id} was created");
@@ -99,6 +110,7 @@ class ProductController extends Controller {
 			'product' => $product
 		]);
 	}
+
 	public function update(ProductRequest $request, PanelProduct $product) {
 /*		// REGLAS VALIDACIÓN
 		$rules = [
@@ -110,14 +122,34 @@ class ProductController extends Controller {
 		];
 		// VALIDAR
 		request()->validate($rules);
-*/		
-		dd($request->validated());
+*/
 		//$product = Product::findOrFail($product);
-		$product->update(request()->validated());
-		return redirect()
-			->route('products.index')
-			->withSuccess("The product with id {$product->id} was edited");
-	}
+        $product->update($request->validated());
+
+        if ($request->hasFile('images')) {
+            foreach ($product->images as $image) {
+                $path = storage_path("app/public/{$image->path}");
+
+                // No olvidar importar el Facade
+                File::delete($path);
+
+                // Cada vez que editemos el producto se eliminarán todas las
+                // ímágenes que tuviera asignadas anteriormente y se le asignará
+                // el nuevo array que hayamos pasado en la edición.
+                $image->delete();
+            }
+
+            foreach ($request->images as $image) {
+                $product->images()->create([
+                    'path' => 'images/' . $image->store('products', 'images'),
+                ]);
+            }
+        }
+
+        return redirect()
+            ->route('products.index')
+            ->withSuccess("The product with id {$product->id} was edited");
+    }
 	
 	public function destroy(PanelProduct $product) {
 		// $product = Product::findOrFail($product);

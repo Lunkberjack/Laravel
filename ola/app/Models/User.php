@@ -42,14 +42,7 @@ class User extends Authenticatable implements MustVerifyEmail {
 	 */
 	protected $casts = [
 		'email_verified_at' => 'datetime',
-	];
-
-	/**
-	 * The attributes that should be converted to dates.
-	 * @var [type]
-	 */
-	protected $dates = [
-		'admin_since',
+		'admin_since' => 'datetime',
 	];
 
 	public function orders() {
@@ -77,6 +70,7 @@ class User extends Authenticatable implements MustVerifyEmail {
 	}
 
 	public function getProfileImageAttribute() {
+	// Si no existe la imagen de usuario, añadimos una por defecto
 	return $this->image ? "images/{$this->image->path}" : 'https://www.gravatar.com/avatar/404?d=mp';
 }
 }

@@ -10,10 +10,12 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Image;
 use App\Scopes\AvailableScope;
+// Vídeo 98: Soft Delete
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'products';
 
@@ -40,6 +42,16 @@ class Product extends Model
     protected static function booted()
     {
         static::addGlobalScope(new AvailableScope);
+
+        static::updated(function($product) {
+            // Si no ponemos la segunda condición, llegaríamos a un 
+            // bucle infinito.
+            if($product->stock == 0 && $product->status == 'available') {
+                $product->status = 'unavailable';
+
+                $product->save();
+            }
+        });
     }
 
     public function carts()

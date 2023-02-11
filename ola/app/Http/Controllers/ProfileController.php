@@ -28,8 +28,16 @@ class ProfileController extends Controller
         return DB::transaction(function () use ($request) {
             $user = $request->user();
 
-            $user->fill($request->validated());
-
+            // Vídeo 100 (solución de bug)
+            // El setter del que hablamos en vídeos anteriores acabó dando un error, ya que la
+            // contraseña era cifrada incluso cuando el valor pasado era null (el usuario
+            // quedaba por tanto sin acceso).
+            //
+            // Lo que hemos hecho ha sido excluir los valores nulos de la validación.
+            // Ahora no nos va a pasar un valor nulo como componente de la request de
+            // actualización y bcrypt no va a encriptarlo. Simplemente se ignora.
+            // user->fill($request->validated());
+            $user->fill(array_filter($request->validated()));
             // Tenemos que verificar que el correo electrónico ha cambiado
             // (si no, haremos modificaciones para nada)
             if ($user->isDirty('email')) {

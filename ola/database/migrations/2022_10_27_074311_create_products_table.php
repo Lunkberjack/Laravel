@@ -19,6 +19,8 @@ class CreateProductsTable extends Migration {
 			$table->float('price')->unsigned();
 			$table->integer('stock')->unsigned();
 			$table->string('status')->default('unavailable');
+			// Se añade (se debe migrar la base)
+			$table->softDeletes();
 			$table->timestamps();
 		});
 	}

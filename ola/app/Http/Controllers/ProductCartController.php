@@ -36,13 +36,17 @@ class ProductCartController extends Controller
 
         if ($product->stock < $quantity + 1) {
             throw ValidationException::withMessages([
-                'product' => "There is not enough stock for the quantity you required of {$product->title}",
+                'product' => "No hay suficientes existencias de {$product->title}",
             ]);
         }
 
         $cart->products()->syncWithoutDetaching([
             $product->id => ['quantity' => $quantity + 1],
         ]);
+
+        // Permite cambiar la fecha de modificación de un carrito
+        // dinámicamente.
+        $cart->touch();
 
         $cookie = $this->cartService->makeCookie($cart);
 
@@ -59,6 +63,8 @@ class ProductCartController extends Controller
     public function destroy(Product $product, Cart $cart)
     {
         $cart->products()->detach($product->id);
+
+        $cart->touch();
 
         $cookie = $this->cartService->makeCookie($cart);
 
