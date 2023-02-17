@@ -18,6 +18,9 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <!--Bootstrap dropdown-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <div id="app">
@@ -31,7 +34,7 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
+                    <!-- Parte izquierda -->
                     <ul class="navbar-nav mr-auto">
                         @if(optional(auth()->user())->isAdmin())
                         <li class="nav-item">
@@ -46,9 +49,8 @@
                         </li> 
                     </ul>
 
-                    <!-- Right Side Of Navbar -->
+                    <!-- Parte derecha -->
                     <ul class="navbar-nav ms-auto">
-                        <!-- Authentication Links -->
                         @guest
                             @if (Route::has('login'))
                                 <li class="nav-item">
@@ -125,5 +127,11 @@
             </div>
         </main>
     </div>
+
+    <!-- Si no se añade este link, no todas las funciones de Bootstrap funcionan (dropdown) -->    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js"
+        integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous">
+    </script>
+
 </body>
 </html>
